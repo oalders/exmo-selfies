@@ -1,0 +1,5 @@
+ExMo-Selfies-*
+*.sw*
+.tidyall.d
+tidyall.ERR
+.vagrant

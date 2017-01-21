@@ -1,0 +1,6 @@
+[submodule "inc/jquery-collagePlus"]
+	path = inc/jquery-collagePlus
+	url = git@github.com:ed-lea/jquery-collagePlus.git
+[submodule "inc/bootstrap"]
+	path = inc/bootstrap
+	url = https://github.com/twbs/bootstrap.git

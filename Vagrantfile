@@ -72,10 +72,13 @@ Vagrant.configure(2) do |config|
       sudo apt-get autoremove
 
       ## 'make' is part of build-essential
-      sudo aptitude install -y build-essential curl libexpat1-dev libmxml-dev libnet-ssleay-perl perl-doc tree
+      sudo aptitude install -y build-essential cpanminus curl libexpat1-dev libmxml-dev libnet-ssleay-perl liblocal-lib-perl perl-doc tree
 
-      ## install cpanm
-      curl -L https://cpanmin.us | perl - App::cpanminus
+  SHELL
+
+   config.vm.provision "shell", privileged: false, inline: <<-SHELL
+
+      echo "cpanm --local-lib=~/perl5 local::lib && eval \$(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)" >> ~/.bash_profile
 
       # install Perl modules from CPAN
       pushd /vagrant

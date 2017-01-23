@@ -78,7 +78,15 @@ Vagrant.configure(2) do |config|
 
    config.vm.provision "shell", privileged: false, inline: <<-SHELL
 
-      echo "cpanm --local-lib=~/perl5 local::lib && eval \$(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)" >> ~/.bash_profile
+   cat > ~/.bash_profile <<- EOM
+export PERL_MB_OPT="--install_base /home/vagrant/perl5";
+export PERL_MM_OPT="INSTALL_BASE=/home/vagrant/perl5";
+export PERL5LIB="/home/vagrant/perl5/lib/perl5:$PERL5LIB";
+export PATH="/home/vagrant/perl5/bin:$PATH";
+EOM
+#      echo "cpanm --local-lib=~/perl5 local::lib && eval \$(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)" >> ~/.bash_profile
+
+      source ~/.bash_profile
 
       # install Perl modules from CPAN
       pushd /vagrant

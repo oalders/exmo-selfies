@@ -1,5 +1,6 @@
 requires "Cpanel::JSON::XS" => "0";
 requires "Data::Printer" => "0";
+requires "Devel::Confess" => "0.009003";
 requires "LWP::ConsoleLogger::Easy" => "0";
 requires "List::AllUtils" => "0";
 requires "Mojolicious::Plugin::Web::Auth::Site::Reddit" => "0.000003";

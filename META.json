@@ -42,6 +42,7 @@
          "requires" : {
             "Cpanel::JSON::XS" : "0",
             "Data::Printer" : "0",
+            "Devel::Confess" : "0.009003",
             "LWP::ConsoleLogger::Easy" : "0",
             "List::AllUtils" : "0",
             "Mojolicious::Plugin::Web::Auth::Site::Reddit" : "0.000003",

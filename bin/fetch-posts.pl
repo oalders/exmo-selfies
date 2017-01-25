@@ -7,32 +7,62 @@ package Redditor;
 use Moo;
 use MooX::Options;
 
+use Config::Pit;
 use Data::Printer;
 use List::AllUtils qw( none );
 use LWP::ConsoleLogger::Easy qw( debug_ua );
-use Types::Standard qw( InstanceOf );
+use Types::Standard qw( HashRef InstanceOf );
 use WWW::Mechanize::Cached ();
 use WebService::Reddit     ();
 
-my @required = (
-    'access_token', 'app_key', 'app_secret', 'refresh_token',
-);
+my @required = ();
 
-option $_ => (
+option access_token => (
     is       => 'ro',
     format   => 's',
     required => 1,
-) for @required;
+);
 
-option $_ => (
+option app_key => (
+    is      => 'ro',
+    format  => 's',
+    lazy    => 1,
+    default => sub { $_[0]->_config->{key} },
+);
+
+option app_secret => (
+    is      => 'ro',
+    format  => 's',
+    lazy    => 1,
+    default => sub { $_[0]->_config->{secret} },
+);
+
+option cache_requests => (
     is => 'ro',
-) for 'cache_requests', 'debug';
+);
 
 has client => (
     is      => 'ro',
     isa     => InstanceOf ['WebService::Reddit'],
     lazy    => 1,
     builder => '_build_client',
+);
+
+has _config => (
+    is      => 'ro',
+    isa     => HashRef,
+    lazy    => 1,
+    builder => '_build_config',
+);
+
+option debug => (
+    is => 'ro',
+);
+
+option refresh_token => (
+    is       => 'ro',
+    format   => 's',
+    required => 1,
 );
 
 sub _build_client {
@@ -55,6 +85,19 @@ sub _build_client {
         $ua ? ( ua => $ua ) : (),
     );
 }
+
+sub _build_config {
+    my $self = shift;
+    my $site = 'reddit';
+    my $pit  = pit_get(
+        $site,
+        require => {
+            key    => ucfirst($site) . ' Client ID',
+            secret => ucfirst($site) . ' Client Secret',
+        }
+    );
+}
+
 package main;
 
 use Path::Tiny qw( path );
@@ -79,6 +122,7 @@ sub get_subreddit {
 
 sub get_selfies {
     my $limit   = 100;
+    my $fetch_limit = 10;
     my $fetches = 0;
     my @filtered;
     my $after;
@@ -89,13 +133,14 @@ sub get_selfies {
         my $uri = uri(
             scheme => 'https',
             host   => 'oauth.reddit.com',
-            path   => '/r/exmormon/new',
+            path   => '/r/exmo_selfies/new',
             query  => { limit => $limit, $after ? ( after => $after ) : () },
         );
         my $new = $client->get($uri);
 
         my $rows = scalar @{ $new->content->{data}->{children} };
-        $after = $new->content->{data}->{children}->[-1]->{data}->{name};
+        $after
+            = $new->content->{data}->{children}->[-1]->{data}->{name};
 
         my @selfies = grep {
             exists $_->{data}->{preview}->{images}->[0]->{resolutions}
@@ -114,7 +159,7 @@ sub get_selfies {
             die "nothing" if !keys %post;
         }
         say "fetches $fetches rows $rows limit $limit";
-        last if $fetches == 15 || $rows < $limit;
+        last if $fetches == $fetch_limit || $rows < $limit;
     }
     return @filtered;
 }

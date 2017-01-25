@@ -1,3 +1,4 @@
+requires "Config::Pit" => "0";
 requires "Cpanel::JSON::XS" => "0";
 requires "Data::Printer" => "0";
 requires "Devel::Confess" => "0.009003";

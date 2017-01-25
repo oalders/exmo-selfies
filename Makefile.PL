@@ -21,6 +21,7 @@ my %WriteMakefileArgs = (
   "MIN_PERL_VERSION" => "5.010",
   "NAME" => "ExMo::Selfies",
   "PREREQ_PM" => {
+    "Config::Pit" => 0,
     "Cpanel::JSON::XS" => 0,
     "Data::Printer" => 0,
     "Devel::Confess" => "0.009003",
@@ -46,6 +47,7 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
+  "Config::Pit" => 0,
   "Cpanel::JSON::XS" => 0,
   "Data::Printer" => 0,
   "Devel::Confess" => "0.009003",
